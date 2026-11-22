@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agriloop - Parcelles</title>
+  <link rel="stylesheet" href="template.css?v=20261122e">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="http://localhost/agriloop/index.php?route=parcelles" data-app-route="parcelles" aria-label="Agriloop, accueil">
+        <span class="brand-mark" aria-hidden="true"></span><span>AgriLoop</span>
+      </a>
+      <nav class="main-nav" aria-label="Navigation principale">
+        <a href="http://localhost/agriloop/index.php?route=parcelles" data-app-route="parcelles"><span class="nav-icon" aria-hidden="true">▦</span>Mes parcelles</a>
+        <a href="ajouter-parcelle.html" data-app-route="parcelle.create" aria-current="page"><span class="nav-icon" aria-hidden="true">＋</span>Ajouter une parcelle</a>
+        <a href="saisir-consommation-eau.html" data-app-route="consommations"><span class="nav-icon" aria-hidden="true">◒</span>Consommation d’eau</a>
+      </nav>
+      <div class="sidebar-footer">Agriculture durable</div>
+    </aside>
+    <main class="app-main page-parcelle">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="hero-kicker">Gestion agricole</p>
+          <h1 data-template-text="{{TITLE}}">Ajouter une parcelle</h1>
+          <p class="hero-subtitle">Définissez les caractéristiques de votre parcelle pour suivre son irrigation et sa consommation.</p>
+        </div>
+      </section>
+      <div class="page-panel">
+        <section class="content-card">
+          <div class="card-heading">
+            <div><h2>Informations de la parcelle</h2><p>Les champs marqués d’un astérisque sont obligatoires.</p></div>
+          </div>
+          <!--{{FORM_ERROR}}-->
+          <form action="http://localhost/agriloop/index.php?route=parcelle.create" method="post">
+      <input type="hidden" name="_csrf_token" value="{{CSRF_TOKEN}}">
+      <!--{{ID_FIELD}}-->
+      <div class="form-grid">
+        <div class="field">
+          <label for="nom">Nom <span aria-hidden="true">*</span></label>
+          <input id="nom" name="nom" type="text" minlength="2" maxlength="100" required value="" data-template-value="{{NOM}}">
+          <!--{{NOM_ERROR}}-->
+        </div>
+        <div class="field">
+          <label for="culture">Culture <span aria-hidden="true">*</span></label>
+          <select id="culture" name="culture" required data-template-value="{{CULTURE}}">
+            <option value="" disabled>Choisir...</option>
+            <option value="cereales">Céréales</option>
+            <option value="legumes">Légumes</option>
+            <option value="fruits">Fruits</option>
+            <option value="autre">Autre</option>
+          </select>
+          <!--{{CULTURE_ERROR}}-->
+        </div>
+        <div class="field">
+          <label for="superficie_ha">Superficie (ha) <span aria-hidden="true">*</span></label>
+          <input id="superficie_ha" name="superficie_ha" type="number" min="0.01" max="1000000" step="0.01" required value="" data-template-value="{{SUPERFICIE}}">
+          <!--{{SUPERFICIE_ERROR}}-->
+        </div>
+        <div class="field">
+          <label for="localisation">Localisation <span aria-hidden="true">*</span></label>
+          <input id="localisation" name="localisation" type="text" minlength="2" maxlength="180" required value="" data-template-value="{{LOCALISATION}}">
+          <!--{{LOCALISATION_ERROR}}-->
+        </div>
+        <div class="field">
+          <label for="mode_irrigation">Mode d’irrigation <span aria-hidden="true">*</span></label>
+          <select id="mode_irrigation" name="mode_irrigation" required data-template-value="{{IRRIGATION}}">
+            <option value="" disabled>Choisir...</option>
+            <option value="goutte-a-goutte">Goutte-à-goutte</option>
+            <option value="aspersion">Aspersion</option>
+            <option value="gravitaire">Gravitaire</option>
+            <option value="autre">Autre</option>
+          </select>
+          <!--{{IRRIGATION_ERROR}}-->
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="submit-button" type="submit">Enregistrer</button>
+        <a class="cancel-link" href="http://localhost/agriloop/index.php?route=parcelles">Annuler</a>
+      </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

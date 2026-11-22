@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agriloop - Consommation d’eau</title>
+  <link rel="stylesheet" href="template.css?v=20261122e">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="http://localhost/agriloop/index.php?route=parcelles" data-app-route="parcelles" aria-label="Agriloop, accueil">
+        <span class="brand-mark" aria-hidden="true"></span><span>AgriLoop</span>
+      </a>
+      <nav class="main-nav" aria-label="Navigation principale">
+        <a href="http://localhost/agriloop/index.php?route=parcelles" data-app-route="parcelles"><span class="nav-icon" aria-hidden="true">▦</span>Mes parcelles</a>
+        <a href="ajouter-parcelle.html" data-app-route="parcelle.create"><span class="nav-icon" aria-hidden="true">＋</span>Ajouter une parcelle</a>
+        <a href="saisir-consommation-eau.html" data-app-route="consommations" aria-current="page"><span class="nav-icon" aria-hidden="true">◒</span>Consommation d’eau</a>
+      </nav>
+      <div class="sidebar-footer">Agriculture durable</div>
+    </aside>
+    <main class="app-main page-consommation">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="hero-kicker">Suivi hydrique</p>
+          <h1 data-template-text="{{TITLE}}">Consommations d’eau</h1>
+          <p class="hero-subtitle">Enregistrez précisément l’usage de l’eau et consultez l’historique de chaque parcelle.</p>
+        </div>
+      </section>
+      <div class="page-panel">
+        <!--{{FLASH_MESSAGE}}-->
+        <section class="content-card">
+          <div class="card-heading">
+            <div><h2>Enregistrer une consommation</h2><p>Associez le volume à une parcelle et à sa date d’irrigation.</p></div>
+          </div>
+          <!--{{FORM_ERROR}}-->
+          <!--{{NO_PARCELLES}}-->
+          <form action="http://localhost/agriloop/index.php?route=consommations" method="post">
+      <input type="hidden" name="_csrf_token" value="{{CSRF_TOKEN}}">
+      <!--{{ID_FIELD}}-->
+      <div class="form-grid">
+        <div class="field">
+          <label for="parcelle">Parcelle <span aria-hidden="true">*</span></label>
+          <input id="parcelle" name="parcelle" type="text" list="parcelle-options" autocomplete="off" placeholder="Saisissez ou choisissez..." required value="" data-template-value="{{PARCELLE}}"{{DISABLED}}>
+          <datalist id="parcelle-options">
+            <!--{{PARCELLE_OPTIONS}}-->
+          </datalist>
+          <!--{{PARCELLE_ERROR}}-->
+        </div>
+        <div class="field">
+          <label for="date_consommation">Date <span aria-hidden="true">*</span></label>
+          <input id="date_consommation" name="date_consommation" type="date" required value="" data-template-value="{{DATE}}"{{DISABLED}}>
+          <!--{{DATE_ERROR}}-->
+        </div>
+        <div class="field">
+          <label for="volume_m3">Volume d’eau (m³) <span aria-hidden="true">*</span></label>
+          <input id="volume_m3" name="volume_m3" type="number" min="0.01" max="1000000000" step="0.01" required value="" data-template-value="{{VOLUME}}"{{DISABLED}}>
+          <!--{{VOLUME_ERROR}}-->
+        </div>
+        <div class="field field-full">
+          <label for="remarque">Remarque</label>
+          <textarea id="remarque" name="remarque" maxlength="500" data-template-value="{{REMARQUE}}"{{DISABLED}}></textarea>
+          <!--{{REMARQUE_ERROR}}-->
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="submit-button" type="submit"{{DISABLED}}>Enregistrer</button>
+        <button class="secondary-button" type="reset"{{DISABLED}}>Réinitialiser</button>
+      </div>
+          </form>
+        </section>
+        <section class="content-card history-card">
+          <div class="card-heading">
+            <div><h2>Historique des consommations</h2><p>Toutes les consommations enregistrées.</p></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+        <thead>
+          <tr><th>Parcelle</th><th>Date</th><th>Volume (m³)</th><th>Remarque</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <!--{{CONSUMPTION_ROWS}}-->
+          <!--{{EMPTY_CONSUMMATIONS}}--><tr><td colspan="5">Aucune consommation enregistrée.</td></tr>
+        </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
