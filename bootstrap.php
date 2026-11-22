@@ -51,11 +51,17 @@ function agriloop_render(string $view, array $data = [], int $status = 200): voi
 
 function agriloop_render_html(string $view, array $replacements, int $status = 200): void
 {
-    if (!in_array($view, ['ajouter-parcelle', 'saisir-consommation-eau'], true)) {
+    $templatePaths = [
+        'ajouter-parcelle' => 'frontoffice/ajouter-parcelle.html',
+        'saisir-consommation-eau' => 'frontoffice/saisir-consommation-eau.html',
+        'backoffice-ajouter-parcelle' => 'backoffice/ajouter-parcelle.html',
+        'backoffice-consommation-eau' => 'backoffice/saisir-consommation-eau.html',
+    ];
+    if (!isset($templatePaths[$view])) {
         throw new RuntimeException('Front-office HTML template not allowed.');
     }
 
-    $path = APP_ROOT . '/views/frontoffice/' . $view . '.html';
+    $path = APP_ROOT . '/views/' . $templatePaths[$view];
     $html = file_get_contents($path);
     if ($html === false) {
         throw new RuntimeException('Front-office HTML template not found.');
@@ -67,6 +73,11 @@ function agriloop_render_html(string $view, array $replacements, int $status = 2
     $html = str_replace(
         ['href="template.css"', 'href="template.css?v=20261122e"'],
         ['href="' . $assetBase . '/views/frontoffice/template.css?v=20261122e"', 'href="' . $assetBase . '/views/frontoffice/template.css?v=20261122e"'],
+        $html
+    );
+    $html = str_replace(
+        'href="backoffice.css"',
+        'href="' . $assetBase . '/views/backoffice/backoffice.css?v=20261122b"',
         $html
     );
     $html = strtr($html, [

@@ -78,7 +78,7 @@ final class ConsommationEauController
             $model->delete($id);
             agriloop_flash('Consommation supprimée.');
         }
-        agriloop_redirect('consommations');
+        agriloop_redirect($this->isBackoffice() ? 'backoffice.consommations' : 'consommations');
     }
 
     private function renderPage(
@@ -95,27 +95,34 @@ final class ConsommationEauController
         }
 
         $rows = '';
+        $backoffice = $this->isBackoffice();
+        $editRoute = $backoffice ? 'backoffice.consommation.edit' : 'consommation.edit';
+        $deleteRoute = $backoffice ? 'backoffice.consommation.delete' : 'consommation.delete';
         foreach ($consommations as $consommation) {
             $consommationId = (int) $consommation['id'];
             $rows .= '<tr><td>' . agriloop_escape($consommation['parcelle']) . '</td><td>'
                 . agriloop_escape($consommation['date_consommation']) . '</td><td>'
                 . agriloop_escape($consommation['volume_m3']) . '</td><td>'
-                . agriloop_escape($consommation['remarque'] ?? '') . '</td><td class="table-actions">'
-                . '<a href="http://localhost/agriloop/index.php?route=consommation.edit&amp;id='
+                . agriloop_escape($consommation['remarque'] ?? '') . '</td><td class="' . ($backoffice ? 'bo-table-actions' : 'table-actions') . '">'
+                . '<a href="http://localhost/agriloop/index.php?route=' . $editRoute . '&amp;id='
                 . $consommationId . '">Modifier</a>'
-                . '<form action="http://localhost/agriloop/index.php?route=consommation.delete&amp;id='
+                . '<form action="http://localhost/agriloop/index.php?route=' . $deleteRoute . '&amp;id='
                 . $consommationId . '" method="post">'
                 . '<input type="hidden" name="_csrf_token" value="' . agriloop_escape(agriloop_csrf_token()) . '">'
                 . '<button class="link-button" type="submit">Supprimer</button></form></td></tr>';
         }
 
-        agriloop_render_html('saisir-consommation-eau', [
+        $view = $backoffice ? 'backoffice-consommation-eau' : 'saisir-consommation-eau';
+        $indexRoute = $backoffice ? 'backoffice.consommations' : 'consommations';
+        $editRoute = $backoffice ? 'backoffice.consommation.edit' : 'consommation.edit';
+        $deleteRoute = $backoffice ? 'backoffice.consommation.delete' : 'consommation.delete';
+        agriloop_render_html($view, [
             '{{TITLE}}' => agriloop_escape($editingId === null
                 ? 'Consommations d’eau'
                 : 'Modifier une consommation'),
             'action="http://localhost/agriloop/index.php?route=consommations"' => $editingId === null
-                ? 'action="http://localhost/agriloop/index.php?route=consommations"'
-                : 'action="http://localhost/agriloop/index.php?route=consommation.edit&amp;id=' . $editingId . '"',
+                ? 'action="http://localhost/agriloop/index.php?route=' . $indexRoute . '"'
+                : 'action="http://localhost/agriloop/index.php?route=' . $editRoute . '&amp;id=' . $editingId . '"',
             '<!--{{ID_FIELD}}-->' => $editingId === null
                 ? ''
                 : '<input type="hidden" name="id" value="' . $editingId . '">',
@@ -137,6 +144,7 @@ final class ConsommationEauController
             '<!--{{CONSUMPTION_ROWS}}-->' => $rows,
             '<!--{{EMPTY_CONSUMMATIONS}}--><tr><td colspan="5">Aucune consommation enregistrée.</td></tr>'
                 => $rows === '' ? '<tr><td colspan="5">Aucune consommation enregistrée.</td></tr>' : '',
+            '<!--{{EMPTY_CONSUMMATIONS}}-->' => $rows === '' ? '<tr><td colspan="5">Aucune consommation enregistrée.</td></tr>' : '',
             '<!--{{FLASH_MESSAGE}}-->' => $this->flashMarkup(agriloop_take_flash()),
         ]);
     }
@@ -180,8 +188,14 @@ final class ConsommationEauController
                 $model->update($editingId, $data);
                 agriloop_flash('Consommation modifiée.');
             }
-            agriloop_redirect('consommations');
+            agriloop_redirect($this->isBackoffice() ? 'backoffice.consommations' : 'consommations');
         }
+    }
+
+    private function isBackoffice(): bool
+    {
+        $route = $_GET['route'] ?? '';
+        return is_string($route) && str_starts_with($route, 'backoffice.');
     }
 
     private function emptyValues(): array

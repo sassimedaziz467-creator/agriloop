@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Back-office - Consommations d’eau</title>
+  <link rel="stylesheet" href="backoffice.css">
+</head>
+<body>
+  <div class="bo-shell">
+    <aside class="bo-sidebar">
+      <a class="bo-brand" href="http://localhost/agriloop/index.php?route=backoffice.parcelles">
+        <span class="bo-brand-mark" aria-hidden="true">A</span><span>AgriLoop</span>
+      </a>
+      <nav class="bo-nav" aria-label="Navigation back-office">
+        <a href="http://localhost/agriloop/index.php?route=backoffice.parcelles">▦ Parcelles</a>
+        <a href="http://localhost/agriloop/index.php?route=backoffice.parcelle.create">＋ Nouvelle parcelle</a>
+        <a href="http://localhost/agriloop/index.php?route=backoffice.consommations" aria-current="page">◒ Consommations d’eau</a>
+      </nav>
+    </aside>
+    <main class="bo-main">
+      <header class="bo-topbar">
+        <h1 class="bo-title" data-template-text="{{TITLE}}">Consommations d’eau</h1>
+        <span class="bo-breadcrumb">Back-office / Consommations</span>
+      </header>
+      <!--{{FLASH_MESSAGE}}-->
+      <div class="bo-grid">
+        <section class="bo-card">
+          <div class="bo-card-header">
+            <div>
+              <h2>Nouvelle consommation</h2>
+              <p>Associez une parcelle, une date et un volume d’eau.</p>
+            </div>
+          </div>
+          <!--{{FORM_ERROR}}-->
+          <!--{{NO_PARCELLES}}-->
+          <form action="http://localhost/agriloop/index.php?route=backoffice.consommations" method="post">
+            <input type="hidden" name="_csrf_token" value="{{CSRF_TOKEN}}">
+            <!--{{ID_FIELD}}-->
+            <div class="bo-form-grid">
+              <div class="bo-field">
+                <label for="parcelle">Parcelle <span aria-hidden="true">*</span></label>
+                <input id="parcelle" name="parcelle" type="text" list="parcelle-options" autocomplete="off" required value="" data-template-value="{{PARCELLE}}"{{DISABLED}}>
+                <datalist id="parcelle-options">
+                  <!--{{PARCELLE_OPTIONS}}-->
+                </datalist>
+                <!--{{PARCELLE_ERROR}}-->
+              </div>
+              <div class="bo-field">
+                <label for="date_consommation">Date <span aria-hidden="true">*</span></label>
+                <input id="date_consommation" name="date_consommation" type="date" required value="" data-template-value="{{DATE}}"{{DISABLED}}>
+                <!--{{DATE_ERROR}}-->
+              </div>
+              <div class="bo-field bo-field-full">
+                <label for="volume_m3">Volume d’eau (m³) <span aria-hidden="true">*</span></label>
+                <input id="volume_m3" name="volume_m3" type="number" min="0.01" max="1000000000" step="0.01" required value="" data-template-value="{{VOLUME}}"{{DISABLED}}>
+                <!--{{VOLUME_ERROR}}-->
+              </div>
+              <div class="bo-field bo-field-full">
+                <label for="remarque">Remarque</label>
+                <textarea id="remarque" name="remarque" maxlength="500" data-template-value="{{REMARQUE}}"{{DISABLED}}></textarea>
+                <!--{{REMARQUE_ERROR}}-->
+              </div>
+            </div>
+            <div class="bo-actions">
+              <button class="bo-primary" type="submit"{{DISABLED}}>Enregistrer</button>
+              <button class="bo-secondary" type="reset"{{DISABLED}}>Réinitialiser</button>
+            </div>
+          </form>
+        </section>
+        <aside class="bo-card bo-aside bo-aside--water">
+          <h3>Suivi hydrique</h3>
+          <p>Enregistrez les volumes pour garder un historique précis des irrigations.</p>
+        </aside>
+      </div>
+      <section class="bo-card bo-history">
+        <div class="bo-card-header">
+          <div>
+            <h2>Historique des consommations</h2>
+            <p>Gestion des opérations enregistrées.</p>
+          </div>
+        </div>
+        <div class="bo-table-wrap">
+          <table>
+            <thead>
+              <tr><th>Parcelle</th><th>Date</th><th>Volume (m³)</th><th>Remarque</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <!--{{CONSUMPTION_ROWS}}-->
+              <!--{{EMPTY_CONSUMMATIONS}}-->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

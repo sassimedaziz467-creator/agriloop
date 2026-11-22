@@ -18,8 +18,16 @@ try {
         case 'parcelle.create':
             (new ParcelleController())->create();
             break;
+        case 'backoffice.parcelle.create':
+            (new ParcelleController())->create();
+            break;
+        case 'backoffice.parcelles':
+            (new ParcelleController())->index();
+            break;
         case 'parcelle.edit':
         case 'parcelle.delete':
+        case 'backoffice.parcelle.edit':
+        case 'backoffice.parcelle.delete':
             $id = is_string($_GET['id'] ?? null)
                 ? filter_var($_GET['id'], FILTER_VALIDATE_INT)
                 : false;
@@ -28,7 +36,7 @@ try {
                 exit('Identifiant de parcelle invalide.');
             }
             $controller = new ParcelleController();
-            if ($route === 'parcelle.edit') {
+            if ($route === 'parcelle.edit' || $route === 'backoffice.parcelle.edit') {
                 $controller->edit((int) $id);
             } else {
                 $controller->delete((int) $id);
@@ -37,8 +45,13 @@ try {
         case 'consommations':
             (new ConsommationEauController())->index();
             break;
+        case 'backoffice.consommations':
+            (new ConsommationEauController())->index();
+            break;
         case 'consommation.edit':
         case 'consommation.delete':
+        case 'backoffice.consommation.edit':
+        case 'backoffice.consommation.delete':
             $id = is_string($_GET['id'] ?? null)
                 ? filter_var($_GET['id'], FILTER_VALIDATE_INT)
                 : false;
@@ -47,7 +60,7 @@ try {
                 exit('Identifiant de consommation invalide.');
             }
             $controller = new ConsommationEauController();
-            if ($route === 'consommation.edit') {
+            if ($route === 'consommation.edit' || $route === 'backoffice.consommation.edit') {
                 $controller->edit((int) $id);
             } else {
                 $controller->delete((int) $id);

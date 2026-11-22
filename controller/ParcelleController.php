@@ -11,6 +11,16 @@ final class ParcelleController
     public function index(): void
     {
         $model = new ParcelleModel();
+        if ($this->isBackoffice()) {
+            $flash = agriloop_take_flash();
+            extract([
+                'parcelles' => $model->all(),
+                'csrfToken' => agriloop_csrf_token(),
+                'flashMessage' => $flash,
+            ], EXTR_SKIP);
+            require APP_ROOT . '/views/backoffice/parcelles.php';
+            return;
+        }
         agriloop_render('parcelles', [
             'title' => 'Parcelles',
             'parcelles' => $model->all(),
@@ -33,7 +43,7 @@ final class ParcelleController
                 if ($errors === []) {
                     (new ParcelleModel())->save(null, $data);
                     agriloop_flash('Parcelle ajoutée.');
-                    agriloop_redirect('parcelles');
+                    agriloop_redirect($this->isBackoffice() ? 'backoffice.parcelles' : 'parcelles');
                 }
             }
         }
@@ -67,7 +77,7 @@ final class ParcelleController
             if ($errors === []) {
                 $model->save($id, $data);
                 agriloop_flash('Parcelle modifiée.');
-                agriloop_redirect('parcelles');
+                agriloop_redirect($this->isBackoffice() ? 'backoffice.parcelles' : 'parcelles');
             }
             $this->showForm('Modifier une parcelle', $id, $values, $errors);
             return;
@@ -90,16 +100,20 @@ final class ParcelleController
                 agriloop_flash('Parcelle et consommations associées supprimées.');
             }
         }
-        agriloop_redirect('parcelles');
+        agriloop_redirect($this->isBackoffice() ? 'backoffice.parcelles' : 'parcelles');
     }
 
     private function showForm(string $title, ?int $id, array $values, array $errors): void
     {
-        agriloop_render_html('ajouter-parcelle', [
+        $backoffice = $this->isBackoffice();
+        $view = $backoffice ? 'backoffice-ajouter-parcelle' : 'ajouter-parcelle';
+        $createRoute = $backoffice ? 'backoffice.parcelle.create' : 'parcelle.create';
+        $editRoute = $backoffice ? 'backoffice.parcelle.edit' : 'parcelle.edit';
+        agriloop_render_html($view, [
             '{{TITLE}}' => agriloop_escape($title),
             'action="http://localhost/agriloop/index.php?route=parcelle.create"' => $id === null
-                ? 'action="http://localhost/agriloop/index.php?route=parcelle.create"'
-                : 'action="http://localhost/agriloop/index.php?route=parcelle.edit&amp;id=' . $id . '"',
+                ? 'action="http://localhost/agriloop/index.php?route=' . $createRoute . '"'
+                : 'action="http://localhost/agriloop/index.php?route=' . $editRoute . '&amp;id=' . $id . '"',
             '<!--{{ID_FIELD}}-->' => $id === null ? '' : '<input type="hidden" name="id" value="' . $id . '">',
             '{{CSRF_TOKEN}}' => agriloop_escape(agriloop_csrf_token()),
             '<!--{{FORM_ERROR}}-->' => $this->errorMarkup($errors, 'form'),
@@ -114,6 +128,12 @@ final class ParcelleController
             '<!--{{LOCALISATION_ERROR}}-->' => $this->errorMarkup($errors, 'localisation'),
             '<!--{{IRRIGATION_ERROR}}-->' => $this->errorMarkup($errors, 'mode_irrigation'),
         ]);
+    }
+
+    private function isBackoffice(): bool
+    {
+        $route = $_GET['route'] ?? '';
+        return is_string($route) && str_starts_with($route, 'backoffice.');
     }
 
     private function errorMarkup(array $errors, string $field): string
