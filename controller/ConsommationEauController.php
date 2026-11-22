@@ -41,7 +41,7 @@ final class ConsommationEauController
         $consommation = $model->find($id);
         if ($consommation === null) {
             agriloop_flash('Consommation introuvable.');
-            agriloop_redirect('consommations');
+            agriloop_redirect($this->isBackoffice() ? 'backoffice.consommations' : 'consommations');
         }
 
         $parcelles = $parcelleModel->all();
@@ -295,11 +295,16 @@ final class ConsommationEauController
             return '';
         }
 
-        return '<span class="form-error">' . agriloop_escape($errors[$field]) . '</span>';
+        $class = $this->isBackoffice() ? 'bo-form-error' : 'form-error';
+        return '<span class="' . $class . '">' . agriloop_escape($errors[$field]) . '</span>';
     }
 
     private function flashMarkup(?string $message): string
     {
-        return $message === null ? '' : '<p class="notice notice-success">' . agriloop_escape($message) . '</p>';
+        if ($message === null) {
+            return '';
+        }
+        $class = $this->isBackoffice() ? 'bo-notice' : 'notice notice-success';
+        return '<p class="' . $class . '">' . agriloop_escape($message) . '</p>';
     }
 }

@@ -57,7 +57,7 @@ final class ParcelleController
         $parcelle = $model->find($id);
         if ($parcelle === null) {
             agriloop_flash('Parcelle introuvable.');
-            agriloop_redirect('parcelles');
+            agriloop_redirect($this->isBackoffice() ? 'backoffice.parcelles' : 'parcelles');
             return;
         }
 
@@ -142,7 +142,8 @@ final class ParcelleController
             return '';
         }
 
-        return '<span class="form-error">' . agriloop_escape($errors[$field]) . '</span>';
+        $class = $this->isBackoffice() ? 'bo-form-error' : 'form-error';
+        return '<span class="' . $class . '">' . agriloop_escape($errors[$field]) . '</span>';
     }
 
     private function validateInput(): array
